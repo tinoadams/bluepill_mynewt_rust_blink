@@ -7,7 +7,7 @@ edition = "2018"
 [lib]
 name = "rust_blink_app"
 path = "src/lib.rs"
-test       = true
+test       = false
 bench      = false
 #proc-macro = true  # Allow building of Procedural Macros: https://blog.rust-lang.org/2018/12/21/Procedural-Macros-in-Rust-2018.html
 

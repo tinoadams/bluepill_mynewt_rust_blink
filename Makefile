@@ -2,18 +2,36 @@
 OPENOCD_SSH_KEY := /home/tinada/rsa_id
 OPENOCD_HOST := 192.168.10.197
 
+PLATFORM := thumbv7m-none-eabi
+
 clean:
 	cargo clean
 	cd mynewt && newt clean -v all
 
+build: build-rust build-newt
+	# package the Rust app+deps as one big ARM lib archive
+	mkdir -p tmprustlib && rm -rf tmprustlib/*
+	cd tmprustlib && \
+		for i in $(PWD)/target/$(PLATFORM)/debug/deps/*.rlib; do arm-none-eabi-ar x $$i; done && \
+		arm-none-eabi-ar r rustlib.a *.o || echo "No dependencies"
+	# override the Mynewt Rust app stub
+	[ -f tmprustlib/rustlib.a ] && cp -a tmprustlib/rustlib.a \
+		mynewt/bin/targets/bluepill_app/app/libs/rust_app/libs_rust_app.a || echo "..."
+	# copy the Rust core lib to Mynewt by overriding the stub
+	cp -a `rustc --print sysroot --target $(PLATFORM)`/lib/rustlib/$(PLATFORM)/lib/libcore-*.rlib \
+		mynewt/bin/targets/bluepill_app/app/libs/rust_libcore/libs_rust_libcore.a
+	# force Mynewt to link app again using injected Rust libs
+	rm mynewt/bin/targets/bluepill_app/app/apps/blinky/blinky.*
+	cd mynewt && \
+		newt build bluepill_app && \
+		newt create-image -v bluepill_app 1.0.0 -2
+
 build-rust:
-	# RUSTUP_HOME=/opt/rust CARGO_HOME=/opt/rust PATH="/opt/rust/bin:$PATH" /usr/bin/sudo /opt/rust/bin/
-	cargo build --target thumbv7m-none-eabi
+	RUST_BACKTRACE=full cargo build --target $(PLATFORM)
 
 build-newt: mynewt/repos
 	cd mynewt && \
-		for target in `ls targets`; do newt build "$$target"; done && \
-		newt create-image -v bluepill_app 1.0.0 -2
+		for target in `ls targets`; do newt build "$$target"; done
 
 mynewt/repos: 
 	make newt-install
@@ -49,3 +67,14 @@ flash-device:
 	scp -i $(OPENOCD_SSH_KEY) -r openocd pi@$(OPENOCD_HOST):~
 	{ cat openocd/flash-init.ocd openocd/flash-boot.ocd openocd/flash-app.ocd ; sleep 5; echo -e '\x1dclose\x0d' ;} | telnet $(OPENOCD_HOST) 4444
 	# ssh pi@openocd.local 'cd openocd && sudo openocd -f flash-init.ocd -f flash-boot.ocd'
+
+gdb:
+	#break repos/apache-mynewt-core/kernel/os/src/os.c:262
+	#break repos/apache-mynewt-core/kernel/os/src/arch/cortex_m3/os_arch_arm.c:297
+	#break repos/apache-mynewt-core/kernel/os/src/arch/cortex_m3/os_arch_arm.c:274
+	#break repos/apache-mynewt-core/kernel/os/src/arch/cortex_m3/m3/HAL_CM3.s:101
+	#break repos/apache-mynewt-core/kernel/os/src/arch/cortex_m3/os_arch_arm.c:252
+	#break repos/apache-mynewt-core/kernel/os/src/os.c:236
+	#break rust/app/src/lib.rs:21
+	#break rust/app/src/lib.rs:25
+	( echo "target remote $(OPENOCD_HOST):3333" ; echo "load" ; cat ) | gdb-multiarch -iex 'add-auto-load-safe-path .' mynewt/bin/targets/bluepill_app/app/apps/blinky/blinky.elf
