@@ -1,0 +1,15 @@
+{
+  "name": "dev-container",
+  "context": "dev-container",
+  "dockerFile": "dev-container/Dockerfile",
+  "runArgs": ["--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined"],
+  "mounts": [
+    "source=${localEnv:HOME}${localEnv:USERPROFILE},target=${localEnv:HOME}${localEnv:USERPROFILE},type=bind,consistency=cached",
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+  "shutdownAction": "none",
+  "extensions": [
+    "webfreak.debug",
+    "rust-lang.rust"
+  ]
+}

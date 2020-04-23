@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "gdb",
+            "request": "attach",
+            "name": "Attach to gdbserver",
+            "executable": "bin/targets/bluepill_app/app/apps/blinky/blinky.elf",
+            // "executable": "./bin/targets/bluepill_boot/app/apps/boot_stub/boot_stub.elf",
+            "target": "192.168.10.197:3333",
+            "remote": true,
+            "cwd": "${workspaceRoot}",
+            // "gdbpath": "arm-none-eabi-gdb",
+            "gdbpath": "gdb-multiarch",
+            "debugger_args": [
+                "-iex",
+                "add-auto-load-safe-path ."
+            ],
+            "autorun": [
+                "monitor reset halt",
+                "load"
+            ]
+        }
+    ]
+}

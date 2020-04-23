@@ -1,0 +1,18 @@
+# Define the Rust workspace, which contains all Rust projects
+
+# All projects in the `rust` folder belong to this workspace
+[workspace]
+members = [
+    "rust/app",
+]
+
+# Options for `cargo build`
+[profile.dev]
+panic = "abort"     # Disable stack unwinding on panic
+
+# Options for `cargo build --release`
+[profile.release]
+panic         = "abort"     # Disable stack unwinding on panic
+codegen-units = 1           # Better optimizations
+debug         = true        # Symbols are nice and they don't increase the size on Flash
+lto           = true        # Better optimizations

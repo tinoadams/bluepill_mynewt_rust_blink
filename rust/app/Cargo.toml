@@ -1,0 +1,26 @@
+[package]
+name = "rust_blink_app"
+version = "0.1.0"
+authors = ["Tino Adams <tino.a77@gmail.com>"]
+edition = "2018"
+
+[lib]
+name = "rust_blink_app"
+path = "src/lib.rs"
+test       = true
+bench      = false
+#proc-macro = true  # Allow building of Procedural Macros: https://blog.rust-lang.org/2018/12/21/Procedural-Macros-in-Rust-2018.html
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cty = "0.2"  # C types library: https://crates.io/crates/cty
+cstr_core = "0.2"  # String utilities from cstr_core library: https://crates.io/crates/cstr_core
+memchr      = { version = "2.3", default-features = false } # String search. Reduce the ROM size by disabling default features. See https://github.com/BurntSushi/rust-memchr
+cortex-m = "0.6.2" # https://crates.io/crates/cortex-m
+#syn         = { version = "1.0", features = [ "full", "extra-traits" ] } # Rust source code parser: https://crates.io/crates/syn
+#quote       = "1.0" # Generate Rust source code: https://crates.io/crates/quote
+#proc-macro2 = "1.0"# Rust procedural macro library: https://crates.io/crates/proc-macro2
+#lazy_static = "1.4"  # Declare lazy statics: https://docs.rs/lazy_static/1.3.0/lazy_static
+#rustc-serialize = "0.3"# Serialise HashMaps to JSON: https://docs.rs/rustc-serialize/0.3.24/rustc_serialize
+#serde = "1.0" # Serialise DS: https://serde.rs/"
