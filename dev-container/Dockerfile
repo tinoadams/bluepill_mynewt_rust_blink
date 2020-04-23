@@ -1,7 +1,7 @@
 FROM mynewt/newt
 
 RUN apt-get update && \
-        apt-get install -y gdb-multiarch curl docker.io make sudo
+        apt-get install -y gdb-multiarch curl docker.io make sudo telnet
 
 ARG USERNAME=vscode
 ARG USER_UID=1000

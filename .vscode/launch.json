@@ -7,9 +7,27 @@
         {
             "type": "gdb",
             "request": "attach",
-            "name": "Attach to gdbserver",
-            "executable": "bin/targets/bluepill_app/app/apps/blinky/blinky.elf",
-            // "executable": "./bin/targets/bluepill_boot/app/apps/boot_stub/boot_stub.elf",
+            "name": "Debug bootloader",
+            "executable": "mynewt/bin/targets/mcu_boot/app/boot/mynewt/mynewt.elf",
+            "target": "192.168.10.197:3333",
+            "remote": true,
+            "cwd": "${workspaceRoot}",
+            // "gdbpath": "arm-none-eabi-gdb",
+            "gdbpath": "gdb-multiarch",
+            "debugger_args": [
+                "-iex",
+                "add-auto-load-safe-path ."
+            ],
+            "autorun": [
+                "monitor reset halt",
+                "load"
+            ]
+        },
+        {
+            "type": "gdb",
+            "request": "attach",
+            "name": "Debug app",
+            "executable": "mynewt/bin/targets/bluepill_app/app/apps/blinky/blinky.elf",
             "target": "192.168.10.197:3333",
             "remote": true,
             "cwd": "${workspaceRoot}",
