@@ -27,7 +27,7 @@
             "type": "gdb",
             "request": "attach",
             "name": "Debug app",
-            "executable": "mynewt/bin/targets/bluepill_app/app/apps/blinky/blinky.elf",
+            "executable": "mynewt/bin/targets/firmware/app/apps/firmware/firmware.elf",
             "target": "192.168.10.197:3333",
             "remote": true,
             "cwd": "${workspaceRoot}",

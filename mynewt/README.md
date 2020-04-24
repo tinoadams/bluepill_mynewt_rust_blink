@@ -25,12 +25,12 @@
 
 Apache Blinky is a skeleton for new Apache Mynewt projects.  The user downloads
 this skeleton by issuing the "newt new" command (using Apache Newt).  Apache
-blinky also contains an example app and target for use with Apache Mynewt to
+firmware also contains an example app and target for use with Apache Mynewt to
 help you get started.
 
 ## Building
 
-Apache Blinky contains an example Apache Mynewt application called blinky.
+Apache Blinky contains an example Apache Mynewt application called firmware.
 When executed on suitably equipped hardware, this application repeatedly blinks
 an LED.  The below procedure describes how to build this application for the
 Apache Mynewt simulator.
@@ -39,21 +39,21 @@ Apache Mynewt simulator.
 
 You will need to download the Apache Newt tool, as documented in the [Getting Started Guide](https://mynewt.apache.org/latest/get_started/index.html).
 
-2. Download the Apache Mynewt Core package (executed from the blinky directory).
+2. Download the Apache Mynewt Core package (executed from the firmware directory).
 
 ```no-highlight
     $ newt install
 ```
 
-3. Build the blinky app for the sim platform using the "my_blinky_sim" target
-(executed from the blinky directory).
+3. Build the firmware app for the sim platform using the "my_firmware_sim" target
+(executed from the firmware directory).
 
 ```no-highlight
-    $ newt build my_blinky_sim
+    $ newt build my_firmware_sim
 ```
 
-The Apache Newt tool should indicate the location of the generated blinky
+The Apache Newt tool should indicate the location of the generated firmware
 executable.  Since the simulator does not have an LED to blink, this version of
-blinky is not terribly exciting - a printed message indicating the current LED
-state.  To learn how to build blinky for actual hardware, please see the
+firmware is not terribly exciting - a printed message indicating the current LED
+state.  To learn how to build firmware for actual hardware, please see the
 [Getting Started Guide](https://mynewt.apache.org/latest/get_started/index.html).

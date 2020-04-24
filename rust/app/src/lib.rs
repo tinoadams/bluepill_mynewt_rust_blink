@@ -18,7 +18,7 @@ extern "C" {
     pub fn os_time_delay(_: u32);
 }
 
-static OS_TICKS_PER_SEC: u32 = 1000;
+static OS_TICKS_PER_SEC: u32 = 4000;
 static G_LED_PIN: i32 = 45;
 
 ///  Main program that initialises the sensor, network driver and starts reading and sending sensor data in the background.

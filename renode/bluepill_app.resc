@@ -8,7 +8,7 @@ machine LoadPlatformDescriptionFromString "uartSemihosting: UART.SemihostingUart
 showAnalyzer cpu.uartSemihosting Antmicro.Renode.Analyzers.LoggingUartAnalyzer
 
 #$bin_boot?=@/mynewt/bin/targets/bluepill_boot/app/boot/mynewt/mynewt.elf.bin
-$bin_app?=@/mynewt/bin/targets/bluepill_app/app/apps/blinky/blinky.elf.bin
+$bin_app?=@/mynewt/bin/targets/firmware/app/apps/firmware/firmware.elf.bin
 
 sysbus LogPeripheralAccess sysbus.gpioPortC
 logFile @/tmp/renode_bluepill_log.txt
