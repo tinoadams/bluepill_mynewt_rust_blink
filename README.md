@@ -3,7 +3,7 @@
   - Install GIT [https://git-scm.com/]
   - Install Docker [https://www.docker.com/]
   - Install VSCode [https://code.visualstudio.com/]
-  - Install Remote container extension [https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers]
+  - Install VSCode remote container extension [https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers]
   - Clone this repo and open it with VSCode
   - Click the green area (bottom left in VSCode window) and select **"reopen in container"**
 

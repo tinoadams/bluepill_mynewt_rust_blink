@@ -38,13 +38,12 @@ mynewt/repos:
 
 newt-install:
 	cd mynewt && newt install || echo '...'
-
+    
 	# weird thing that the default Mynewt version contains modified files which prevent repos from upgrading
-	cd mynewt/repos/mcuboot && rm -rf ext/mbedtls || echo '...'
-	cd mynewt/repos/apache-mynewt-core && git reset --hard || echo '...'
-
-	cd mynewt && newt upgrade
-
+	cd mynewt/repos/mcuboot && git clean -f -x -d || echo '...'
+	# change repo Git config to prevent error when Windows docker is changing file modes
+	for i in mynewt/repos/*; do cd $$i && git config core.fileMode false ; cd -; done
+	
 	cd mynewt && \
 		newt target create bluepill_app && \
 		newt target set bluepill_app bsp=@apache-mynewt-core/hw/bsp/bluepill && \
@@ -57,7 +56,7 @@ newt-install:
 		newt target set mcu_boot app=@mcuboot/boot/mynewt && \
 		newt target set mcu_boot build_profile=optimized || echo "already exists"
 
-	cd mynewt && newt upgrade
+	cd mynewt && newt upgrade -f
 
 run-renode:
 	docker run -v `pwd`:/workspace -w /workspace --rm -it -p 5000:5000 antmicro/renode \
