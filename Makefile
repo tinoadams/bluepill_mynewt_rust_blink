@@ -37,9 +37,13 @@ mynewt/repos:
 	make newt-install
 
 newt-install:
-	cd mynewt && \
-		newt install && \
-		newt upgrade
+	cd mynewt && newt install || echo '...'
+
+	# weird thing that the default Mynewt version contains modified files which prevent repos from upgrading
+	cd mynewt/repos/mcuboot && rm -rf ext/mbedtls || echo '...'
+	cd mynewt/repos/apache-mynewt-core && git reset --hard || echo '...'
+
+	cd mynewt && newt upgrade
 
 	cd mynewt && \
 		newt target create bluepill_app && \
@@ -47,14 +51,13 @@ newt-install:
 		newt target set bluepill_app app=apps/blinky && \
 		newt target set bluepill_app build_profile=debug || echo "already exists"
 
-	# weird thing that the default Mynewt version contains modified files which prevent mcuboot from upgrading
-	cd mynewt/repos/mcuboot ; [ `git status | grep modified:` ] && rm -rf ext/mbedtls || echo '...'
-
 	cd mynewt && \
 		newt target create mcu_boot && \
 		newt target set mcu_boot bsp=@apache-mynewt-core/hw/bsp/bluepill && \
 		newt target set mcu_boot app=@mcuboot/boot/mynewt && \
 		newt target set mcu_boot build_profile=optimized || echo "already exists"
+
+	cd mynewt && newt upgrade
 
 run-renode:
 	docker run -v `pwd`:/workspace -w /workspace --rm -it -p 5000:5000 antmicro/renode \
