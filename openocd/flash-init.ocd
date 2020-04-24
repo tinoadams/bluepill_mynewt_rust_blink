@@ -1,3 +1,13 @@
+# This is an OpenOCD script that prepares the STM32 Blue Pill before any flashing.
+
+source [find interface/stlink-v2.cfg]
+set CHIPNAME stm32f1x
+# Another script that OCD installs, containing information on the STM32 we're using.
+source [find target/stm32f1x.cfg]
+
+reset_config srst_nogate
+init
+
 # Enable logging output from the device to OpenOCD's console stream. See LogString() in
 # include/log.h for an example of using this.
 arm semihosting enable
@@ -5,8 +15,8 @@ arm semihosting enable
 # Disable all openocd messages.
 #debug_level 0
 
-#echo "Setting flash size to 64 KB instead of default 128 KB..."
-#set FLASH_SIZE 0x10000
+echo "Setting flash size to 64 KB instead of default 128 KB..."
+set FLASH_SIZE 0x10000
 
 echo "Stopping device..."
 reset halt
@@ -14,13 +24,13 @@ echo ""
 
 echo "Current flash info..."
 flash banks; flash list; flash probe 0
-flash info 0 sectors  #  Show details of each sector.
+#flash info 0 sectors  #  Show details of each sector.
 echo ""
 
 #echo "Mass erase is needed to allow unlocking of Blue Pill..."
 #stm32f1x mass_erase 0
 #echo ""
-
+#
 #echo "Unlock will fail if Blue Pill is locked, need to mass erase first..."
 #stm32f1x unlock 0  # Unlock will allow flash to be read after flashing.
 #echo ""

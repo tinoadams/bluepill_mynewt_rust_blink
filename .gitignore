@@ -2,3 +2,4 @@ target/
 openocd/bin/
 tmprustlib/
 mynewt/repos/
+.vscode/.cortex-debug*

@@ -1,7 +1,3 @@
-## These config vals also need to be set in .vscode/launch.json
-OPENOCD_SSH_KEY := /home/tinada/rsa_id
-OPENOCD_HOST := 192.168.10.197
-
 PLATFORM := thumbv7m-none-eabi
 
 clean:
@@ -63,12 +59,7 @@ run-renode:
 		renode -P 5000 --disable-xwt -e 's @/workspace/renode/firmware.resc'
 
 flash-device:
-	mkdir -p openocd/bin && rm -rf openocd/bin/*
-	cp -a mynewt/bin/targets/mcu_boot/app/boot/mynewt/mynewt.elf.bin openocd/bin/
-	cp -a mynewt/bin/targets/firmware/app/apps/firmware/firmware.img openocd/bin/
-	scp -i $(OPENOCD_SSH_KEY) -r openocd pi@$(OPENOCD_HOST):~
-	{ cat openocd/flash-init.ocd openocd/flash-boot.ocd openocd/flash-app.ocd ; sleep 5; echo -e '\x1dclose\x0d' ;} | telnet $(OPENOCD_HOST) 4444
-	# ssh pi@openocd.local 'cd openocd && sudo openocd -f flash-init.ocd -f flash-boot.ocd'
+	openocd -f openocd/flash-init.ocd -f openocd/flash-boot.ocd -f openocd/flash-app.ocd
 
 gdb:
 	#break repos/apache-mynewt-core/kernel/os/src/os.c:262
@@ -79,4 +70,6 @@ gdb:
 	#break repos/apache-mynewt-core/kernel/os/src/os.c:236
 	#break rust/app/src/lib.rs:21
 	#break rust/app/src/lib.rs:25
-	( echo "target remote $(OPENOCD_HOST):3333" ; echo "load" ; cat ) | gdb-multiarch -iex 'add-auto-load-safe-path .' mynewt/bin/targets/firmware/app/apps/firmware/firmware.elf
+
+	( echo "target remote | openocd -f openocd/debug.ocd -c 'gdb_port pipe; log_output openocd.log'" ; echo "monitor reset halt" ; echo "load" ; echo "cont" ; cat ) | \
+		gdb-multiarch -iex 'add-auto-load-safe-path .' mynewt/bin/targets/firmware/app/apps/firmware/firmware.elf

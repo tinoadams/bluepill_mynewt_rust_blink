@@ -1,46 +1,52 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    //  VSCode Debugger Config for Cortex Debug Extension.  We use Cortex Debug because it shows more details, e.g. the STM32 Peripherals.
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "gdb",
-            "request": "attach",
-            "name": "Debug bootloader",
-            "executable": "mynewt/bin/targets/mcu_boot/app/boot/mynewt/mynewt.elf",
-            "target": "192.168.10.197:3333",
-            "remote": true,
+            //  Cortex Debug Configuration: https://marcelball.ca/projects/cortex-debug/cortex-debug-launch-configurations/
+            "name": "Debug firmware",
+            "type": "cortex-debug",
+            "request": "launch",
+            //  OpenOCD
+            "servertype": "openocd",
             "cwd": "${workspaceRoot}",
-            // "gdbpath": "arm-none-eabi-gdb",
-            "gdbpath": "gdb-multiarch",
-            "debugger_args": [
-                "-iex",
-                "add-auto-load-safe-path ."
-            ],
-            "autorun": [
-                "monitor reset halt",
-                "load"
-            ]
-        },
-        {
-            "type": "gdb",
-            "request": "attach",
-            "name": "Debug app",
+            //  Application Executable to be flashed to Blue Pill before debugging.  Note that the Application ELF image does not contain a valid Image Header.  So we must bypass the Bootloader, shown below.
             "executable": "mynewt/bin/targets/firmware/app/apps/firmware/firmware.elf",
-            "target": "192.168.10.197:3333",
-            "remote": true,
-            "cwd": "${workspaceRoot}",
-            // "gdbpath": "arm-none-eabi-gdb",
-            "gdbpath": "gdb-multiarch",
-            "debugger_args": [
-                "-iex",
-                "add-auto-load-safe-path ."
+            //  For Bootloader: "executable": "mynewt/bin/targets/mcu_boot/app/boot/mynewt/mynewt.elf",
+            "device": "STM32F103C8",
+            "configFiles": [
+                //  Tell OpenOCD to open the ST Link connection to STM32F1 MCU.
+                "interface/stlink-v2.cfg",
+                "target/stm32f1x.cfg",
+                //  Tell OpenOCD to run our custom debug commands.
+                "openocd/debug.ocd"
             ],
-            "autorun": [
-                "monitor reset halt",
-                "load"
-            ]
+            "preLaunchCommands": [
+                //  Before loading the Application, run these gdb commands.
+                //  Set timeout for executing openocd commands.
+                "set remotetimeout 60",
+                //  This indicates that an unrecognized breakpoint location should automatically result in a pending breakpoint being created.
+                "set breakpoint pending on",
+                //  Display the Arm instruction when hitting breakpoint.
+                //  "display/i $pc",
+                //  Load Bootloader symbols in case we jump to the Bootloader.
+                //  "symbol-file bin/targets/bluepill_boot/app/apps/boot/boot.elf",
+                //  Restore Application symbols.
+                //  "symbol-file bin/targets/bluepill_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf",
+            ],
+            "postLaunchCommands": [
+                //  After loading the Application, run these gdb commands.  The Application ELF image does not contain a valid Image Header.
+                //  So we bypass the Bootloader and jump to the Application directly.
+                "stepi", //  Must step before setting PC.
+                "set $pc = Reset_Handler", //  Prepare to jump to the Application's Reset Handler.
+                "stepi", //  Execute the Reset Handler.
+                "break main", //  Break at main().
+                "break __assert_func", //  Break for any assert failures.
+                "break os_default_irq", //  Break for any unhandled interrupts.
+                //  "continue",                 //  Run until main() and break.
+            ],
+            "preRestartCommands": [],
+            "postRestartCommands": [],
         }
     ]
 }
