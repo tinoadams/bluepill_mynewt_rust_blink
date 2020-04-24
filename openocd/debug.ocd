@@ -1,5 +1,10 @@
 # This is an OpenOCD script that connects to the STM32 Blue Pill for Cortex Debug.
 
+source [find interface/stlink-v2.cfg]
+set CHIPNAME stm32f1x
+# Another script that OCD installs, containing information on the STM32 we're using.
+source [find target/stm32f1x.cfg]
+
 # Debug Level must be 2 or greater or gdb will fail.
 debug_level 2
 

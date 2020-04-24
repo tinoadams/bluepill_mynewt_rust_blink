@@ -71,5 +71,5 @@ gdb:
 	#break rust/app/src/lib.rs:21
 	#break rust/app/src/lib.rs:25
 
-	( echo "target remote | openocd -f openocd/debug.ocd -c 'gdb_port pipe; log_output openocd.log'" ; echo "monitor reset halt" ; echo "load" ; echo "cont" ; cat ) | \
+	( echo "target remote | openocd -f openocd/debug.ocd -c 'gdb_port pipe; log_output openocd/openocd.log'" ; echo "monitor reset halt" ; echo "load" ; cat ) | \
 		gdb-multiarch -iex 'add-auto-load-safe-path .' mynewt/bin/targets/firmware/app/apps/firmware/firmware.elf

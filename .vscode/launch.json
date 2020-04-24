@@ -15,9 +15,6 @@
             //  For Bootloader: "executable": "mynewt/bin/targets/mcu_boot/app/boot/mynewt/mynewt.elf",
             "device": "STM32F103C8",
             "configFiles": [
-                //  Tell OpenOCD to open the ST Link connection to STM32F1 MCU.
-                "interface/stlink-v2.cfg",
-                "target/stm32f1x.cfg",
                 //  Tell OpenOCD to run our custom debug commands.
                 "openocd/debug.ocd"
             ],
