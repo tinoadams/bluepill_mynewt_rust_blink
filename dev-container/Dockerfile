@@ -1,7 +1,7 @@
 FROM mynewt/newt
 
 RUN apt-get update && \
-        apt-get install -y gdb-multiarch curl docker.io make sudo telnet openocd sudo
+        apt-get install -y gdb-multiarch curl docker.io make sudo telnet openocd sudo llvm-dev libclang-dev clang
 
 ARG USERNAME=vscode
 ARG USER_UID=1000
@@ -13,7 +13,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 USER $USERNAME
 
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain stable -y
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
 ENV PATH=/home/$USERNAME/.cargo/bin:$PATH
 RUN rustup component add rls rust-analysis rust-src
-RUN rustup target add thumbv7m-none-eabi --toolchain stable-x86_64-unknown-linux-gnu
+RUN rustup target add thumbv7m-none-eabi --toolchain nightly-x86_64-unknown-linux-gnu

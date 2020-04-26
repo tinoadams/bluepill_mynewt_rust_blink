@@ -1,4 +1,9 @@
 #![no_std] //  Don't link with standard Rust library, which is not compatible with embedded systems
+#![allow(non_upper_case_globals)]
+#![allow(non_camel_case_types)]
+#![allow(non_snake_case)]
+
+include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 extern crate cortex_m; //  Declare the external library `cortex_m`
 

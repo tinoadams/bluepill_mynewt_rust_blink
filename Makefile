@@ -23,7 +23,7 @@ build: build-rust build-mynewt
 		newt create-image -v firmware 1.0.0 -2
 
 build-rust:
-	RUST_BACKTRACE=full cargo build --target $(PLATFORM)
+	RUST_BACKTRACE=full cargo build --target $(PLATFORM) -Z features=build_dep
 
 build-mynewt: mynewt/repos
 	cd mynewt && \
