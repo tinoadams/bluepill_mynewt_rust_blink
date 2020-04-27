@@ -1,13 +1,3 @@
-# This is an OpenOCD script that prepares the STM32 Blue Pill before any flashing.
-
-source [find interface/stlink-v2.cfg]
-set CHIPNAME stm32f1x
-# Another script that OCD installs, containing information on the STM32 we're using.
-source [find target/stm32f1x.cfg]
-
-reset_config srst_nogate
-init
-
 # Enable logging output from the device to OpenOCD's console stream. See LogString() in
 # include/log.h for an example of using this.
 arm semihosting enable

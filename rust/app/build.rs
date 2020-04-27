@@ -4,10 +4,6 @@ use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    // Tell cargo to tell rustc to link the system bzip2
-    // shared library.
-    println!("cargo:rustc-link-lib=bz2");
-
     // Tell cargo to invalidate the built crate whenever the wrapper changes
     println!("cargo:rerun-if-changed=wrapper.h");
 
@@ -15,6 +11,19 @@ fn main() {
     // to bindgen, and lets you build up options for
     // the resulting bindings.
     let bindings = bindgen::Builder::default()
+        .clang_arg("-I/workspaces/blue_rust/mynewt/bin/targets/firmware/generated/include")
+        .clang_arg("-I/workspaces/blue_rust/mynewt/repos/apache-mynewt-core/hw/hal/include")
+        .clang_arg("-I/workspaces/blue_rust/mynewt/repos/apache-mynewt-core/hw/bsp/bluepill/include")
+        .clang_arg("-I/workspaces/blue_rust/mynewt/repos/apache-mynewt-core/kernel/os/include")
+        .clang_arg("-I/workspaces/blue_rust/mynewt/repos/apache-mynewt-core/kernel/os/include/os/arch/cortex_m3")
+        .clang_arg("-I/workspaces/blue_rust/mynewt/repos/apache-mynewt-core/hw/bsp/bluepill/include")
+        
+        .clang_arg("-I/workspaces/blue_rust/mynewt/repos/apache-mynewt-core/hw/mcu/stm/stm32_common/include")
+        .clang_arg("-I/workspaces/blue_rust/mynewt/repos/apache-mynewt-core/hw/cmsis-core/src/ext")
+        .clang_arg("-I/workspaces/blue_rust/mynewt/repos/apache-mynewt-core/hw/mcu/stm/stm32f1xx/src/ext/Drivers/CMSIS/Device/ST/STM32F1xx/Include")
+        .clang_arg("-I/workspaces/blue_rust/mynewt/repos/apache-mynewt-core/hw/mcu/stm/stm32f1xx/include")
+        .clang_arg("-I/workspaces/blue_rust/mynewt/repos/apache-mynewt-core/sys/sysinit/include")
+        
         // do not use Rust std lib
         .use_core()
         // instead of 'std' c-type aliases use the aliases provided in 'cty' crate

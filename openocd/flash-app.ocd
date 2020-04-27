@@ -3,8 +3,8 @@
 reset halt
 # Application address must sync with mynewt/repos/apache-mynewt-core/hw/bsp/bluepill/bsp.yml
 echo "Flashing Application..."
-flash write_image erase unlock mynewt/bin/targets/firmware/app/apps/firmware/firmware.img 0x08008000
-flash verify_bank 0            mynewt/bin/targets/firmware/app/apps/firmware/firmware.img 0x8000
+flash write_image erase unlock openocd/bin/firmware.img 0x08008000
+flash verify_bank 0            openocd/bin/firmware.img 0x8000
 echo ""
 
 echo "Restarting and running the app..."

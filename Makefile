@@ -1,10 +1,13 @@
+OPENOCD_HOST := "192.168.10.197"
+OPENOCD_TARGET_DIR := '/home/pi'
+
 PLATFORM := thumbv7m-none-eabi
 
 clean:
 	cargo clean
 	cd mynewt && newt clean -v all
 
-build: build-rust build-mynewt
+build: build-mynewt build-rust
 	# package the Rust app+deps as one big ARM lib archive
 	mkdir -p tmprustlib && rm -rf tmprustlib/*
 	cd tmprustlib && \
@@ -58,8 +61,24 @@ run-renode:
 	docker run -v `pwd`:/workspace -w /workspace --rm -it -p 5000:5000 antmicro/renode \
 		renode -P 5000 --disable-xwt -e 's @/workspace/renode/firmware.resc'
 
-flash-device:
-	openocd -f openocd/flash-init.ocd -f openocd/flash-boot.ocd -f openocd/flash-app.ocd
+flash-st-link: copy-bins
+	openocd -f openocd/st-link.ocd -f openocd/flash-init.ocd -f openocd/flash-boot.ocd -f openocd/flash-app.ocd
+
+flash-rpi: copy-bins
+	# copy the folder including binaries to the openocd host
+	scp -r openocd pi@$(OPENOCD_HOST):$(OPENOCD_TARGET_DIR)
+	# make sure OpenOCD is running in the $(OPENOCD_TARGET_DIR) directory on the host for file paths in the intruction files to be correct
+	# eg. cd $(OPENOCD_TARGET_DIR) && sudo openocd -f openocd/bitbang-swd.ocd
+	{ cat openocd/flash-init.ocd openocd/flash-boot.ocd openocd/flash-app.ocd ; sleep 5; echo -e '\x1dclose\x0d' ;} \
+		| telnet $(OPENOCD_HOST) 4444
+
+copy-bins:
+	mkdir -p openocd/bin && rm -rf openocd/bin/*
+	cp -a mynewt/bin/targets/mcu_boot/app/boot/mynewt/mynewt.elf.bin openocd/bin/
+	cp -a mynewt/bin/targets/firmware/app/apps/firmware/firmware.img openocd/bin/
+	# ELF for debugging purposes
+	cp -a mynewt/bin/targets/mcu_boot/app/boot/mynewt/mynewt.elf openocd/bin/
+	cp -a mynewt/bin/targets/firmware/app/apps/firmware/firmware.elf openocd/bin/
 
 gdb:
 	#break repos/apache-mynewt-core/kernel/os/src/os.c:262

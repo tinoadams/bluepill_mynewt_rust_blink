@@ -2,8 +2,8 @@
 
 reset halt
 echo "Flashing Bootloader..."
-flash write_image erase unlock mynewt/bin/targets/mcu_boot/app/boot/mynewt/mynewt.elf.bin 0x08000000
-flash verify_bank 0            mynewt/bin/targets/mcu_boot/app/boot/mynewt/mynewt.elf.bin 0
+flash write_image erase unlock openocd/bin/mynewt.elf.bin 0x08000000
+flash verify_bank 0            openocd/bin/mynewt.elf.bin 0
 echo ""
 
 echo "Restarting and halting..."

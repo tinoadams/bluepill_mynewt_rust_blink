@@ -10,20 +10,7 @@ extern crate cortex_m; //  Declare the external library `cortex_m`
 use core::panic::PanicInfo; //  Import `PanicInfo` type which is used by `panic()` below
 use cortex_m::asm::bkpt; //  Import cortex_m assembly function to inject breakpoint
 
-///  Import the custom interop helper library at `libs/mynewt_rust`
-#[link(name = "libs_mynewt_rust")] //  Functions below are located in the Mynewt build output `libs_mynewt_rust.a`
-extern "C" {
-    ///  Initialise the Mynewt system.  Start the Mynewt drivers and libraries.  Equivalent to `sysinit()` macro in C.
-    ///  C API: `void rust_sysinit()`
-    pub fn rust_sysinit();
-
-    pub fn hal_gpio_init_out(_: i32, _: i32) -> i32;
-    pub fn hal_gpio_toggle(_: i32) -> i32;
-
-    pub fn os_time_delay(_: u32);
-}
-
-static OS_TICKS_PER_SEC: u32 = 4000;
+// static OS_TICKS_PER_SEC: u32 = 4000;
 static G_LED_PIN: i32 = 45;
 
 ///  Main program that initialises the sensor, network driver and starts reading and sending sensor data in the background.
