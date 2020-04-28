@@ -15,5 +15,11 @@ USER $USERNAME
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
 ENV PATH=/home/$USERNAME/.cargo/bin:$PATH
-RUN rustup component add rls rust-analysis rust-src
-RUN rustup target add thumbv7m-none-eabi --toolchain nightly-x86_64-unknown-linux-gnu
+
+# https://rust-lang.github.io/rustup-components-history/index.html
+RUN rustup toolchain add nightly-2020-04-23 && \
+    rustup component add rls rust-analysis rust-src --toolchain=nightly-2020-04-23 && \
+    rustup default nightly-2020-04-23
+# RUN rustup component add rls rust-analysis rust-src
+
+RUN rustup target add thumbv7m-none-eabi --toolchain nightly-2020-04-23
