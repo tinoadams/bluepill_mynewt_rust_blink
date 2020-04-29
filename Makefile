@@ -39,7 +39,7 @@ mynewt-install:
 	cd mynewt && newt install || echo '...'
     
 	# weird thing that the default Mynewt version contains modified files which prevent repos from upgrading
-	cd mynewt/repos/mcuboot && git clean -f -x -d || echo '...'
+	cd mynewt/repos/mcuboot && git clean -f -x -d ; rm -rf ext/mbedtls/include/mbedtls
 	# change repo Git config to prevent error when Windows docker is changing file modes
 	for i in mynewt/repos/*; do cd $$i && git config core.fileMode false ; cd -; done
 	
