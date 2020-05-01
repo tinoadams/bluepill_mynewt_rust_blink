@@ -33,7 +33,7 @@ build-mynewt: mynewt/repos
 		for target in `ls targets`; do newt build "$$target" || echo "ignoring error... Rust code needs to be injected first"; done
 
 mynewt/repos: 
-	make newt-install
+	make mynewt-install
 
 mynewt-install:
 	cd mynewt && newt install || echo '...'
@@ -74,10 +74,10 @@ flash-rpi: copy-bins
 
 copy-bins:
 	mkdir -p openocd/bin && rm -rf openocd/bin/*
-	cp -a mynewt/bin/targets/mcu_boot/app/boot/mynewt/mynewt.elf.bin openocd/bin/
+	cp -a mynewt/bin/targets/mcu_boot/app/@mcuboot/boot/mynewt/mynewt.elf.bin openocd/bin/
 	cp -a mynewt/bin/targets/firmware/app/apps/firmware/firmware.img openocd/bin/
 	# ELF for debugging purposes
-	cp -a mynewt/bin/targets/mcu_boot/app/boot/mynewt/mynewt.elf openocd/bin/
+	cp -a mynewt/bin/targets/mcu_boot/app/@mcuboot/boot/mynewt/mynewt.elf openocd/bin/
 	cp -a mynewt/bin/targets/firmware/app/apps/firmware/firmware.elf openocd/bin/
 
 gdb:
