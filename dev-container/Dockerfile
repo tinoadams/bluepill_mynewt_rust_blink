@@ -1,4 +1,4 @@
-FROM mynewt/newt
+FROM newt:1.8.0-6
 
 RUN apt-get update && \
         apt-get install -y gdb-multiarch curl docker.io make sudo telnet openocd sudo llvm-dev libclang-dev clang
