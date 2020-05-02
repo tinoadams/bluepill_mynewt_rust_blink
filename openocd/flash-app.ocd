@@ -10,4 +10,4 @@ echo ""
 echo "Restarting and running the app..."
 reset run
 
-exit
+#exit

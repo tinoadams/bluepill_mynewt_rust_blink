@@ -62,15 +62,17 @@ run-renode:
 		renode -P 5000 --disable-xwt -e 's @/workspace/renode/firmware.resc'
 
 flash-st-link: copy-bins
-	openocd -f openocd/st-link.ocd -f openocd/flash-init.ocd -f openocd/flash-boot.ocd -f openocd/flash-app.ocd
+	openocd -f openocd/st-link.ocd -f openocd/flash-init.ocd -f openocd/flash-boot.ocd -f openocd/flash-app.ocd -c exit
 
 flash-rpi: copy-bins
+	# run on shell: echo -e "\x1dclose\x0d" > openocd/close-telnet.txt
+	
 	# copy the folder including binaries to the openocd host
-	scp -r openocd pi@$(OPENOCD_HOST):$(OPENOCD_TARGET_DIR)
+	# scp -r openocd pi@$(OPENOCD_HOST):$(OPENOCD_TARGET_DIR)
 	# make sure OpenOCD is running in the $(OPENOCD_TARGET_DIR) directory on the host for file paths in the intruction files to be correct
 	# eg. cd $(OPENOCD_TARGET_DIR) && sudo openocd -f openocd/bitbang-swd.ocd
-	{ cat openocd/flash-init.ocd openocd/flash-boot.ocd openocd/flash-app.ocd ; sleep 5; echo -e '\x1dclose\x0d' ;} \
-		| telnet $(OPENOCD_HOST) 4444
+	{ cat openocd/flash-init.ocd openocd/flash-boot.ocd openocd/flash-app.ocd; sleep 5; cat openocd/close-telnet.txt ;} \
+		| telnet $(OPENOCD_HOST) 4444 2>&1 3>&1 | tee flash-rpi.log
 
 copy-bins:
 	mkdir -p openocd/bin && rm -rf openocd/bin/*
