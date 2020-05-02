@@ -68,11 +68,13 @@ flash-rpi: copy-bins
 	# run on shell: echo -e "\x1dclose\x0d" > openocd/close-telnet.txt
 	
 	# copy the folder including binaries to the openocd host
-	# scp -r openocd pi@$(OPENOCD_HOST):$(OPENOCD_TARGET_DIR)
+	scp -r openocd pi@$(OPENOCD_HOST):$(OPENOCD_TARGET_DIR)
 	# make sure OpenOCD is running in the $(OPENOCD_TARGET_DIR) directory on the host for file paths in the intruction files to be correct
 	# eg. cd $(OPENOCD_TARGET_DIR) && sudo openocd -f openocd/bitbang-swd.ocd
 	{ cat openocd/flash-init.ocd openocd/flash-boot.ocd openocd/flash-app.ocd; sleep 5; cat openocd/close-telnet.txt ;} \
 		| telnet $(OPENOCD_HOST) 4444 2>&1 3>&1 | tee flash-rpi.log
+	# check for error in log
+	grep -ai 'failed' flash-rpi.log && (echo "ERROR flashing device, check flash-rpi.log"; exit 1) || echo "DONE"
 
 copy-bins:
 	mkdir -p openocd/bin && rm -rf openocd/bin/*
